@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/crime_title"
-        android:layout_width="338dp"
+        android:layout_width="0dp"
         android:layout_height="26dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/crime_date"
-        android:layout_width="338dp"
+        android:layout_width="0dp"
         android:layout_height="27dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
