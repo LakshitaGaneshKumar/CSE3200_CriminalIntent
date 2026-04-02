@@ -26,12 +26,11 @@ class CrimeListViewModel : ViewModel() {
 //                    isSolved = num % 2 == 1
 //                )
 //                crimes += crime
-//                //crimes.add(crime)
 //            }
             Log.d(TAG, "Loading crimes finished")
-            Log.d(TAG, "Out of VM Scope")
-            Log.d(TAG, "Size of crime ${crimes.size}")
+            Log.d(TAG, "Size of crime: ${crimes.size}")
         }
+        Log.d(TAG, "Out of VM Scope")
     }
 
     suspend fun loadCrimes(): List<Crime> {

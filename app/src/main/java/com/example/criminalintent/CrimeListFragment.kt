@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.criminalintent.databinding.FragmentCrimeListBinding
 import kotlinx.coroutines.Job
@@ -23,7 +25,7 @@ class CrimeListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total crimes = ${crimeListViewModel.crimes.size}")
+        Log.d(TAG, "Total crimes: ${crimeListViewModel.crimes.size}")
     }
 
     override fun onCreateView(
@@ -33,24 +35,35 @@ class CrimeListFragment : Fragment() {
     ): View? {
         _binding = FragmentCrimeListBinding.inflate(layoutInflater, container, false)
         binding.crimeRecyclerView.layoutManager = LinearLayoutManager(context)
-        val crimes = crimeListViewModel.crimes
-        val adapter = CrimeListAdapter(crimes)
-        binding.crimeRecyclerView.adapter = adapter
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val crimes = crimeListViewModel.loadCrimes()
+                binding.crimeRecyclerView.adapter = CrimeListAdapter(crimes)
+            }
+        }
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        job = viewLifecycleOwner.lifecycleScope.launch {
-            val crimes = crimeListViewModel.loadCrimes()
-            binding.crimeRecyclerView.adapter = CrimeListAdapter(crimes)
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        job = viewLifecycleOwner.lifecycleScope.launch {
+//            val crimes = crimeListViewModel.loadCrimes()
+//            binding.crimeRecyclerView.adapter = CrimeListAdapter(crimes)
+//        }
+//        Log.d(TAG, "Job launching in onStart")
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        // cancel the job started in onStart
+//        Log.d(TAG, "Job getting canceled in onStop")
+//        job?.cancel()
+//    }
 
-    override fun onStop() {
-        super.onStop()
-        // cancel the job started in onStart
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         job?.cancel()
+        Log.d(TAG, "Job getting canceled in onStop")
     }
 
     override fun onDestroyView() {
