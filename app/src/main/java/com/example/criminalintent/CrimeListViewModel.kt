@@ -11,40 +11,28 @@ import java.util.UUID
 private const val TAG = "CrimeListViewModel"
 
 class CrimeListViewModel : ViewModel() {
-    var crimes = mutableListOf<Crime>()
+
+    private val crimeRepository = CrimeRepository.get()
+    //var crimes = mutableListOf<Crime>()
+    //val crimes = crimeRepository.getCrimes()
     init{
-        Log.d(TAG, "About to start a coroutine")
         viewModelScope.launch {
-            Log.d(TAG, "Coroutine launched")
-            crimes += loadCrimes()
-//            delay(5000)
-//            for (num in 0 until 100) {
-//                val crime = Crime(
-//                    id = UUID.randomUUID(),
-//                    title = "Crime #${num + 1}",
-//                    date = Date(),
-//                    isSolved = num % 2 == 1
-//                )
-//                crimes += crime
-//            }
-            Log.d(TAG, "Loading crimes finished")
-            Log.d(TAG, "Size of crime: ${crimes.size}")
+            //crimes += loadCrimes()
         }
-        Log.d(TAG, "Out of VM Scope")
     }
 
-    suspend fun loadCrimes(): List<Crime> {
-        val result = mutableListOf<Crime>()
-        delay(5000)
-        for (num in 0 until 100) {
-            val crime = Crime(
-                id = UUID.randomUUID(),
-                title = "Crime #${num + 1}",
-                date = Date(),
-                isSolved = num % 2 == 1
-            )
-            result += crime
-        }
-        return result
-    }
+ //   suspend fun loadCrimes(): List<Crime> { return crimeRepository.getCrimes() }
+//        val result = mutableListOf<Crime>()
+//        delay(5000)
+//        for (num in 0 until 100) {
+//            val crime = Crime(
+//                id = UUID.randomUUID(),
+//                title = "Crime #${num + 1}",
+//                date = Date(),
+//                isSolved = num % 2 == 1
+//            )
+//            result += crime
+//        }
+//        return result
+//    }
 }

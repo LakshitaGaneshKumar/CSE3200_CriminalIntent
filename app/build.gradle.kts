@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("org.jetbrains.kotlin.kapt")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -35,7 +37,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    kotlinOptions{
+        jvmTarget = "11"
+    }
 }
+
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -47,6 +55,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
     implementation("androidx.room:room-runtime:2.8.4")
     implementation("androidx.room:room-ktx:2.8.4")
+    kapt("androidx.room:room-compiler:2.8.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
