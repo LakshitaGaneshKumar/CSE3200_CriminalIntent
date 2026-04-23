@@ -2,15 +2,24 @@ package com.example.criminalintent
 
 // the x in androidx means that it belongs to the jetpack compose class
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import com.example.criminalintent.databinding.FragmentCrimeDetailBinding
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 
+private const val TAG = "c rimeDetailFragment"
 // this is how you make the CrimeDetailFragment class a child of the Fragment class
 class CrimeDetailFragment : Fragment() {
 
@@ -20,17 +29,11 @@ class CrimeDetailFragment : Fragment() {
     private var _binding : FragmentCrimeDetailBinding? = null
     private val binding
         get() = checkNotNull(_binding){"Failed to access binding"}
-    private lateinit var crime : Crime
+    //private lateinit var crime : Crime
+    private val args: CrimeDetailFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        crime = Crime(
-            id = UUID.randomUUID(),
-            title = "",
-            date = Date(),
-            isSolved = false
-        )
+    private val crimeDetailViewModel : CrimeDetailViewModel by viewModels {
+        CrimeDetailViewModelFactory(args.crimeId)
     }
 
     override fun onCreateView(
@@ -53,17 +56,38 @@ class CrimeDetailFragment : Fragment() {
         // apply is one of 6 kotlin scoping functions. they all have lambdas that are slightly different from each other
         binding.apply{
             crimeTitle.doOnTextChanged { text, _, _, _ ->
-                crime = crime.copy(title = text.toString())
+                crimeDetailViewModel.updateCrime { oldCrime ->
+                    oldCrime.copy(title = text.toString())
+                }
             }
 
             crimeDate.apply{
-                text = crime.date.toString()
                 isEnabled = false
             }
 
             crimeSolved.setOnCheckedChangeListener { _, isChecked ->
-                crime = crime.copy(isSolved = isChecked)
+                crimeDetailViewModel.updateCrime { oldCrime ->
+                    oldCrime.copy(isSolved = isChecked)
+                }
             }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    crimeDetailViewModel.crime.collect { crime ->
+                        crime?.let { updateUI(it) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUI(crime: Crime) {
+        binding.apply {
+            if (crimeTitle.text.toString() != crime.title) {
+                crimeTitle.setText(crime.title)
+            }
+            crimeDate.text = crime.date.toString()
+            crimeSolved.isChecked = crime.isSolved
         }
     }
 }

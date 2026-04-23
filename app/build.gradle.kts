@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.kapt")
-    id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs")
 }
 

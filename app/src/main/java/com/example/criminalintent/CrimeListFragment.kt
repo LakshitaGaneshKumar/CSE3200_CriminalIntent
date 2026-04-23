@@ -24,10 +24,10 @@ class CrimeListFragment : Fragment() {
     private val binding
         get() = checkNotNull(_binding){"We got an error in the binding"}
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        Log.d(TAG, "Total crimes: ${crimeListViewModel.crimes.size}")
-//    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,8 +61,11 @@ class CrimeListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 //val crimes = crimeListViewModel.loadCrimes()
                 crimeListViewModel.crimes.collect { crimes ->
-                    binding.crimeRecyclerView.adapter = CrimeListAdapter(crimes) {
-                        findNavController().navigate(R.id.show_crime_detail)
+                    binding.crimeRecyclerView.adapter = CrimeListAdapter(crimes) { crimeId ->
+                        findNavController().navigate(
+                            //R.id.show_crime_detail
+                            CrimeListFragmentDirections.showCrimeDetail(crimeId)
+                        )
                     }
                 }
             }
