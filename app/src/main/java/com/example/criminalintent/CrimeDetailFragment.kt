@@ -13,13 +13,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.criminalintent.databinding.FragmentCrimeDetailBinding
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 
-private const val TAG = "c rimeDetailFragment"
+private const val TAG = "crimeDetailFragment"
 // this is how you make the CrimeDetailFragment class a child of the Fragment class
 class CrimeDetailFragment : Fragment() {
 
@@ -69,6 +70,13 @@ class CrimeDetailFragment : Fragment() {
                 crimeDetailViewModel.updateCrime { oldCrime ->
                     oldCrime.copy(isSolved = isChecked)
                 }
+            }
+
+            deleteCrime.setOnClickListener {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    crimeDetailViewModel.deleteCrime(crimeDetailViewModel.crime.value!!)
+                }
+                findNavController().navigateUp()
             }
 
             viewLifecycleOwner.lifecycleScope.launch {
