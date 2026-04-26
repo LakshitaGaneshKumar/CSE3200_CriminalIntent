@@ -16,8 +16,6 @@ private const val TAG = "CrimeListViewModel"
 class CrimeListViewModel : ViewModel() {
 
     private val crimeRepository = CrimeRepository.get()
-    //var crimes = mutableListOf<Crime>()
-    //val crimes = crimeRepository.getCrimes()
     private val _crimes : MutableStateFlow<List<Crime>> = MutableStateFlow(emptyList())
     val crimes : StateFlow<List<Crime>>
         get() = _crimes.asStateFlow()
@@ -31,18 +29,7 @@ class CrimeListViewModel : ViewModel() {
         }
     }
 
- //   suspend fun loadCrimes(): List<Crime> { return crimeRepository.getCrimes() }
-//        val result = mutableListOf<Crime>()
-//        delay(5000)
-//        for (num in 0 until 100) {
-//            val crime = Crime(
-//                id = UUID.randomUUID(),
-//                title = "Crime #${num + 1}",
-//                date = Date(),
-//                isSolved = num % 2 == 1
-//            )
-//            result += crime
-//        }
-//        return result
-//    }
+    suspend fun addCrime(crime: Crime) {
+        crimeRepository.addCrime(crime)
+    }
 }

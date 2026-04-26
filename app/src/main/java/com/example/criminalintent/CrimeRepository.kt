@@ -32,6 +32,10 @@ class CrimeRepository private constructor(
             database.crimeDao().updateCrime(crime)
         }
     }
+
+    suspend fun addCrime(crime: Crime) {
+        database.crimeDao().addCrime(crime)
+    }
     companion object {
         private var INSTANCE: CrimeRepository? = null
 
